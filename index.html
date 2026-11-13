@@ -1515,7 +1515,7 @@ async function finalizeGameTurn(session) {
   } catch (error) {
     console.error(error);
     gameFinalizing = false;
-    $("gameMessage").textContent = "خطا در بررسی پاسخ؛ دوباره اتصال را بررسی کن.";
+    $("gameMessage").textContent = "خطا: " + (error.code || error.message || String(error));
   }
 }
 
