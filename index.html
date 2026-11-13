@@ -1,0 +1,1326 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b14">
+<title>FRIEND QUIZ</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#080b14;
+  --panel:#111827;
+  --panel2:#172235;
+  --cyan:#42d9ff;
+  --purple:#a78bfa;
+  --green:#36e6a0;
+  --red:#ff5578;
+  --text:#f4f7ff;
+  --muted:#94a3b8;
+}
+
+*{box-sizing:border-box}
+
+body {
+  margin:0;
+  min-height:100vh;
+  font-family:'Vazirmatn',sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%,#172b49 0,transparent 35%),
+    radial-gradient(circle at 90% 90%,#241943 0,transparent 35%),
+    var(--bg);
+  color:var(--text);
+}
+
+button,input {
+  font-family:inherit;
+}
+
+button {
+  cursor:pointer;
+  border:0;
+}
+
+#app {
+  width:min(100%,850px);
+  margin:auto;
+  padding:24px 17px 50px;
+}
+
+.brand {
+  text-align:center;
+  padding:28px 0;
+}
+
+.brand h1 {
+  font-size:clamp(32px,8vw,58px);
+  margin:0;
+  letter-spacing:4px;
+  color:var(--cyan);
+  text-shadow:0 0 25px #42d9ff88;
+}
+
+.brand p {
+  color:var(--muted);
+  margin:8px 0;
+  letter-spacing:2px;
+}
+
+.panel {
+  background:linear-gradient(145deg,#172235ee,#101725ee);
+  border:1px solid #ffffff13;
+  border-radius:22px;
+  padding:23px;
+  box-shadow:0 15px 50px #0005;
+  margin-bottom:18px;
+}
+
+h2 {
+  margin-top:0;
+  font-size:21px;
+}
+
+.muted {
+  color:var(--muted);
+  font-size:14px;
+}
+
+.players {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:20px;
+}
+
+.player {
+  background:#ffffff08;
+  border:1px solid #ffffff18;
+  border-radius:17px;
+  padding:19px 8px;
+  color:white;
+  transition:.2s;
+}
+
+.player:hover {
+  transform:translateY(-4px);
+  border-color:var(--cyan);
+  box-shadow:0 0 22px #42d9ff25;
+}
+
+.player .avatar {
+  font-size:35px;
+  display:block;
+  margin-bottom:9px;
+}
+
+.player strong {
+  font-size:15px;
+}
+
+.primary {
+  width:100%;
+  padding:14px;
+  border-radius:13px;
+  color:#07111c;
+  background:linear-gradient(100deg,var(--cyan),#8b9cff);
+  font-weight:800;
+  margin-top:15px;
+}
+
+.secondary {
+  background:#ffffff12;
+  color:white;
+  border:1px solid #ffffff20;
+  padding:11px 15px;
+  border-radius:12px;
+}
+
+.danger {
+  background:#ff557822;
+  color:#ff829a;
+  border:1px solid #ff557844;
+}
+
+input {
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  background:#080e19;
+  border:1px solid #ffffff20;
+  color:white;
+  outline:none;
+  margin:8px 0;
+}
+
+input:focus {
+  border-color:var(--cyan);
+}
+
+.question {
+  font-size:19px;
+  line-height:2;
+  font-weight:700;
+}
+
+.option {
+  display:block;
+  width:100%;
+  text-align:right;
+  padding:15px;
+  border-radius:13px;
+  background:#ffffff09;
+  border:1px solid #ffffff17;
+  color:white;
+  margin:10px 0;
+  transition:.2s;
+}
+
+.option:hover {
+  border-color:var(--cyan);
+  background:#42d9ff13;
+}
+
+.option.selected {
+  border-color:var(--cyan);
+  background:#42d9ff20;
+}
+
+.topline {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.timer {
+  font-size:27px;
+  font-weight:800;
+  color:var(--green);
+}
+
+.hidden {display:none!important}
+
+.progress {
+  height:7px;
+  background:#ffffff14;
+  border-radius:20px;
+  overflow:hidden;
+  margin:16px 0;
+}
+
+.progress div {
+  height:100%;
+  background:var(--cyan);
+  width:0;
+  transition:.3s;
+}
+
+.status {
+  color:var(--muted);
+  font-size:13px;
+}
+
+.admin-row {
+  display:flex;
+  justify-content:space-between;
+  padding:13px;
+  background:#ffffff08;
+  border-radius:12px;
+  margin:8px 0;
+}
+
+@media(max-width:450px) {
+  .players {gap:7px}
+  .player {padding:15px 5px}
+  .player strong {font-size:13px}
+  .panel {padding:17px}
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<header class="brand">
+  <h1>FRIEND QUIZ</h1>
+  <p>HOW WELL DO YOU KNOW YOUR FRIENDS?</p>
+</header>
+
+<section id="home" class="panel">
+  <h2>به دنیای Friend Quiz خوش اومدی</h2>
+  <p class="muted">شخصیت خودت رو انتخاب کن تا وارد بازی بشی.</p>
+
+  <div class="players">
+    <button class="player" onclick="selectPlayer('mahdi')">
+      <span class="avatar">👑</span>
+      <strong>مهدی</strong>
+      <div class="muted">مدیر بازی</div>
+    </button>
+
+    <button class="player" onclick="selectPlayer('amirali')">
+      <span class="avatar">⚡</span>
+      <strong>امیرعلی</strong>
+      <div class="muted">بازیکن</div>
+    </button>
+
+    <button class="player" onclick="selectPlayer('rastin')">
+      <span class="avatar">🎯</span>
+      <strong>راستین</strong>
+      <div class="muted">بازیکن</div>
+    </button>
+  </div>
+
+  <p class="status" style="text-align:center;margin-top:20px">
+    FRIENDS • CHALLENGE • KNOWLEDGE
+  </p>
+</section>
+
+<section id="dashboard" class="panel hidden">
+  <div class="topline">
+    <div>
+      <h2 id="welcome"></h2>
+      <div class="muted" id="role"></div>
+    </div>
+    <button class="secondary" onclick="logout()">خروج</button>
+  </div>
+
+  <div id="playerDashboard" class="hidden">
+    <h2>پنل بازیکن</h2>
+    <p class="muted">فرم شخصیت خودت رو تکمیل کن.</p>
+    <button class="primary" onclick="startForm()">شروع فرم شخصیت</button>
+    <div id="playerStatus" class="status"></div>
+  </div>
+
+  <div id="adminDashboard" class="hidden">
+    <h2>پنل مدیریت</h2>
+    <div class="admin-row">
+      <span>وضعیت بازی</span>
+      <strong id="gameStatus">آماده</strong>
+    </div>
+    <div class="admin-row">
+      <span>امیرعلی</span>
+      <strong id="amirStatus">منتظر</strong>
+    </div>
+    <div class="admin-row">
+      <span>راستین</span>
+      <strong id="rastinStatus">منتظر</strong>
+    </div>
+    <button class="primary" onclick="showAdminForms()">مشاهده فرم‌ها</button>
+    <button class="primary" onclick="startGame()">شروع مسابقه</button>
+    <div id="adminForms"></div>
+  </div>
+</section>
+
+<section id="formScreen" class="panel hidden">
+  <div class="topline">
+    <h2>فرم شخصیت</h2>
+    <span id="formCount" class="muted"></span>
+  </div>
+  <div class="progress"><div id="formProgress"></div></div>
+  <div id="formQuestion" class="question"></div>
+  <div id="formOptions"></div>
+  <button class="secondary" onclick="previousForm()">سؤال قبلی</button>
+  <button class="primary" id="nextForm" onclick="nextForm()">سؤال بعدی</button>
+</section>
+
+<section id="gameScreen" class="panel hidden">
+  <div class="topline">
+    <div>
+      <div class="muted">سؤال مسابقه</div>
+      <strong id="gameTurn">نوبت بازیکن</strong>
+    </div>
+    <div class="timer" id="timer">30</div>
+  </div>
+  <div class="progress"><div id="gameProgress"></div></div>
+  <div id="gameQuestion" class="question"></div>
+  <div id="gameOptions"></div>
+  <div id="gameMessage" class="status"></div>
+</section>
+
+<section id="resultScreen" class="panel hidden">
+  <h2>نتیجه مسابقه</h2>
+  <div id="results"></div>
+  <button class="primary" onclick="backHome()">بازگشت به خانه</button>
+</section>
+
+</div>
+
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  onValue,
+  update
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCpWbjq5X-FZu30tklQx3QHZuGiNhOcpb0",
+  authDomain: "friend-quiz-3f282.firebaseapp.com",
+  databaseURL: "https://friend-quiz-3f282-default-rtdb.firebaseio.com",
+  projectId: "friend-quiz-3f282",
+  storageBucket: "friend-quiz-3f282.firebasestorage.app",
+  messagingSenderId: "569989715866",
+  appId: "1:569989715866:web:9bd0f5813b80989f8f8c23",
+  measurementId: "G-MKZP1FMF8Y"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const players = {
+  mahdi: {name:"مهدی", role:"مدیر بازی"},
+  amirali: {name:"امیرعلی", role:"بازیکن"},
+  rastin: {name:"راستین", role:"بازیکن"}
+};
+
+let currentPlayer = null;
+let currentPin = null;
+let formIndex = 0;
+let formAnswers = {};
+let selectedOption = null;
+let timerInterval = null;
+let adminUnsubscribe = null;
+let gameSessionUnsubscribe = null;
+let answerUnsubscribe = null;
+let gameNextTimeout = null;
+let gameFormsCache = null;
+let gameStats = null;
+let gameReview = [];
+let gameSession = null;
+let currentGameAnswer = null;
+let listeningAnswerTurn = null;
+let gameFinalizing = false;
+let gameRevealScheduled = false;
+
+const PIN_CODES = {
+  mahdi: "7030",
+  rastin: "009100",
+  amirali: "1819"
+};
+
+const EMAILS = {
+  mahdi: "mhdyk3613@gmail.com",
+  rastin: "Mahdifard.090@gmail.com",
+  amirali: "fardm426@gmail.com"
+};
+
+const USER_UIDS = {
+  mahdi: "pNUySKNGurUtbED4PDKmkTosxLt1",
+  amirali: "cOJI7q9mHUaovQJ6CyV0HY2c53E3",
+  rastin: "atbHz6jrTkeGyQDWSfrDi0xvK7p1"
+};
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+function toBase64(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+function fromBase64(value) {
+  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
+}
+
+async function makeEncryptionKey(pin, playerId) {
+  const material = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(pin),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: encoder.encode("friend-quiz-v1-" + playerId),
+      iterations: 120000,
+      hash: "SHA-256"
+    },
+    material,
+    {name: "AES-GCM", length: 256},
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function savePlayerForm(submitted = false) {
+  if (!currentPlayer || currentPlayer === "mahdi" || !currentPin) return;
+
+  const key = await makeEncryptionKey(currentPin, currentPlayer);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+
+  const payload = encoder.encode(JSON.stringify({
+    answers: formAnswers,
+    submitted,
+    updatedAt: Date.now()
+  }));
+
+  const encrypted = await crypto.subtle.encrypt(
+    {name: "AES-GCM", iv},
+    key,
+    payload
+  );
+
+  await set(ref(db, "friendQuizSecure/forms/" + currentPlayer), {
+    iv: toBase64(iv),
+    data: toBase64(encrypted),
+    updatedAt: Date.now()
+  });
+}
+
+async function decryptPlayerForm(record, playerId, pin) {
+  const key = await makeEncryptionKey(pin, playerId);
+
+  const decrypted = await crypto.subtle.decrypt(
+    {name: "AES-GCM", iv: fromBase64(record.iv)},
+    key,
+    fromBase64(record.data)
+  );
+
+  return JSON.parse(decoder.decode(decrypted));
+}
+
+const $ = id => document.getElementById(id);
+
+function show(id) {
+  ["home","dashboard","formScreen","gameScreen","resultScreen"]
+    .forEach(x => $(x).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+}
+
+window.selectPlayer = async function(id) {
+  if (!players[id]) return;
+
+  const pin = prompt("رمز ورود " + players[id].name + " را وارد کن:");
+  if (pin === null) return;
+
+  if (pin !== PIN_CODES[id]) {
+    alert("رمز ورود بازی اشتباه است.");
+    return;
+  }
+
+  const password = prompt("رمز حساب Firebase را وارد کن:");
+  if (password === null || !password) return;
+
+  try {
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      EMAILS[id],
+      password
+    );
+
+    if (credential.user.uid !== USER_UIDS[id]) {
+      await signOut(auth);
+      alert("حساب واردشده با شخصیت انتخابی مطابقت ندارد.");
+      return;
+    }
+
+    currentPlayer = id;
+    currentPin = pin;
+    formAnswers = {};
+
+    $("welcome").textContent = "سلام " + players[id].name;
+    $("role").textContent = players[id].role;
+
+    $("playerDashboard").classList.toggle("hidden", id === "mahdi");
+    $("adminDashboard").classList.toggle("hidden", id !== "mahdi");
+
+    show("dashboard");
+    attachGameListener();
+
+    if (id === "mahdi") {
+      window.showAdminForms();
+      return;
+    }
+
+    try {
+      const snapshot = await get(ref(db, "friendQuizSecure/forms/" + id));
+
+      if (snapshot.exists()) {
+        const saved = await decryptPlayerForm(snapshot.val(), id, pin);
+        formAnswers = saved.answers || {};
+        $("playerStatus").textContent = saved.submitted
+          ? "فرم شما قبلاً ثبت شده است."
+          : "پاسخ‌های قبلی شما بازیابی شدند.";
+      } else {
+        $("playerStatus").textContent = "هنوز فرمی ذخیره نکرده‌ای.";
+      }
+    } catch (error) {
+      console.error(error);
+      $("playerStatus").textContent =
+        "دریافت اطلاعات ناموفق بود؛ قوانین Firebase را بررسی کن.";
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("ورود ناموفق بود. ایمیل و رمز حساب Firebase را بررسی کن.\n" +
+          (error.code || error.message));
+  }
+};
+
+window.logout = async function() {
+  if (gameSessionUnsubscribe) gameSessionUnsubscribe();
+  if (answerUnsubscribe) answerUnsubscribe();
+  if (timerInterval) clearInterval(timerInterval);
+  if (gameNextTimeout) clearTimeout(gameNextTimeout);
+  gameSessionUnsubscribe = null;
+  answerUnsubscribe = null;
+  if (adminUnsubscribe) {
+    adminUnsubscribe();
+    adminUnsubscribe = null;
+  }
+
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error(error);
+  }
+
+  currentPlayer = null;
+  currentPin = null;
+  formAnswers = {};
+  show("home");
+};
+
+const forms = {
+  amirali: [
+    ["وقتی وارد جمع جدید می‌شی، معمولاً اولین رفتارت چیه؟",[
+      "خودم سر صحبت رو باز می‌کنم",
+      "اول رفتار بقیه رو بررسی می‌کنم",
+      "منتظر می‌مونم کسی صحبت کنه",
+      "بیشتر ساکت می‌مونم و شنونده‌ام"
+    ]],
+    ["معمولاً چه ساعتی بیدار می‌شی؟",[
+      "۶ تا ۸ صبح","۸ تا ۱۰ صبح","۱۰ تا ۱۲ ظهر","بعد از ۱۲ ظهر"
+    ]],
+    ["بعد از بیدار شدن اولین کارت چیه؟",[
+      "چک کردن گوشی","شستن صورت و آماده شدن","خوردن صبحانه","دوباره استراحت کردن"
+    ]],
+    ["در روز آزاد بیشتر دوست داری چیکار کنی؟",[
+      "بیرون رفتن و گردش","بازی کردن","فیلم یا سریال دیدن","وقت گذراندن با دوستان"
+    ]],
+    ["در بازی‌های ویدیویی چه سبکی رو بیشتر دوست داری؟",[
+      "اکشن و مبارزه‌ای","ورزشی","ماشینی و مسابقه‌ای","جهان‌باز و ماجراجویی"
+    ]],
+    ["کدوم غذای ایرانی رو بیشتر دوست داری؟",[
+      "قرمه‌سبزی","قیمه","زرشک‌پلو با مرغ","کباب"
+    ]],
+    ["برای یادگیری موضوع جدید کدوم روش رو ترجیح می‌دی؟",[
+      "ویدئو و آموزش تصویری","خواندن مطلب","یادگیری عملی","پرسیدن از فرد متخصص"
+    ]],
+    ["چه هدیه‌ای بیشتر خوشحالت می‌کنه؟",[
+      "وسیله دیجیتال","لباس یا کفش","وسیله گیمینگ","سفر یا تفریح"
+    ]],
+    ["وقتی به هدف مهمی می‌رسی از چی خوشحال می‌شی؟",[
+      "دیدن نتیجه زحماتم","تحسین دیگران","اثبات توانایی خودم","تجربه جدید"
+    ]],
+    ["وقتی ناراحتی ترجیح می‌دی چیکار کنی؟",[
+      "تنها باشم","با دوستم صحبت کنم","بازی یا سرگرمی","موسیقی گوش بدم"
+    ]],
+    ["برای مشکل مهم با چه کسی مشورت می‌کنی؟",[
+      "مهدی","راستین","مادرم","پدرم"
+    ]],
+    ["در رقابت دوستانه بیشتر دنبال چی هستی؟",[
+      "حتماً برنده شدن","لذت بردن","رقابت نزدیک","تجربه و یادگیری"
+    ]],
+    ["از چه رفتاری بیشتر بدت میاد؟",[
+      "دروغ گفتن","بی‌احترامی","خیانت در دوستی","خودخواهی"
+    ]],
+    ["اگر از کسی ناراحت بشی چطور حلش می‌کنی؟",[
+      "مستقیم صحبت می‌کنم","سکوت می‌کنم تا آروم بشم","فاصله می‌گیرم","از فرد دیگری کمک می‌گیرم"
+    ]],
+    ["کدوم ویژگی خودت رو بیشتر دوست داری؟",[
+      "شوخ‌طبعی","وفاداری","باهوش بودن","شجاعت و اعتمادبه‌نفس"
+    ]],
+    ["کدوم مهارت رو یاد می‌گیری؟",[
+      "برنامه‌نویسی","زبان خارجی","موسیقی","مهارت ورزشی"
+    ]],
+    ["در تصمیم‌های مهم بیشتر به چی اهمیت می‌دی؟",[
+      "نظر خانواده","نظر دوستان","علاقه خودم","بررسی منطقی"
+    ]],
+    ["چه نوع فیلمی رو بیشتر دوست داری؟",[
+      "اکشن","کمدی","ترسناک و معمایی","علمی‌تخیلی"
+    ]],
+    ["در جمع دوستان چه نقشی داری؟",[
+      "مرکز توجه و شوخی","شنونده","شروع‌کننده بحث","آرام و کم‌حرف"
+    ]],
+    ["برای زندگی کدوم کشور رو انتخاب می‌کنی؟",[
+      "آلمان","ترکیه","کانادا","ژاپن"
+    ]]
+  ],
+
+  rastin: [
+    ["کدوم فصل سال رو بیشتر دوست داری؟",[
+      "بهار","تابستان","پاییز","زمستان"
+    ]],
+    ["برای یادآوری کارها از چه روشی استفاده می‌کنی؟",[
+      "یادداشت روی کاغذ","یادآور گوشی","حافظه ذهنی","کمک گرفتن از دیگران"
+    ]],
+    ["برای سرگرمی کدوم وسیله رو انتخاب می‌کنی؟",[
+      "کنسول بازی","کامپیوتر یا لپ‌تاپ","دوچرخه","دوربین عکاسی"
+    ]],
+    ["هنگام غذا خوردن چه نوشیدنی‌ای رو ترجیح می‌دی؟",[
+      "نوشابه","دوغ","آب","دلستر"
+    ]],
+    ["قبل از خواب بیشتر چه کاری انجام می‌دی؟",[
+      "شبکه‌های اجتماعی","بازی کردن","فیلم دیدن","صحبت با دوستان"
+    ]],
+    ["برای گردش یک‌روزه کجا رو انتخاب می‌کنی؟",[
+      "جنگل و طبیعت","ساحل و دریا","مکان تاریخی","شهربازی"
+    ]],
+    ["چه هدیه‌ای رو برای خودت انتخاب می‌کنی؟",[
+      "گوشی یا تبلت","وسیله گیمینگ","لباس و کفش","سفر"
+    ]],
+    ["کدوم حیوان خانگی رو ترجیح می‌دی؟",[
+      "سگ","گربه","خرگوش","پرنده"
+    ]],
+    ["کدوم رنگ رو بیشتر دوست داری؟",[
+      "مشکی","آبی","قرمز","سفید"
+    ]],
+    ["در خرید وسیله دیجیتال کدوم ویژگی مهم‌تره؟",[
+      "قدرت و سرعت","کیفیت دوربین","طراحی و ظاهر","قیمت مناسب"
+    ]],
+    ["برای تصمیم مهم بیشتر به چی اعتماد می‌کنی؟",[
+      "تجربه قبلی","نظر خانواده","نظر دوستان","بررسی مزایا و معایب"
+    ]],
+    ["در تصمیم‌گیری معمولاً چطوری هستی؟",[
+      "احساسی","منطقی","با مشورت دیگران","بسته به شرایط"
+    ]],
+    ["برای سفر کدوم وسیله رو انتخاب می‌کنی؟",[
+      "قطار","هواپیما","ماشین شخصی","اتوبوس"
+    ]],
+    ["وقتی عصبانی می‌شی معمولاً چیکار می‌کنی؟",[
+      "ساکت می‌شم","بحث می‌کنم","از جمع فاصله می‌گیرم","سریع آروم می‌شم"
+    ]],
+    ["در دوستی بیشتر به چی اهمیت می‌دی؟",[
+      "وفاداری","صداقت","شوخ‌طبعی","درک متقابل"
+    ]],
+    ["بزرگ‌ترین هدفت برای آینده چیه؟",[
+      "موفقیت مالی","شغل موردعلاقه","زندگی مستقل","جایگاه اجتماعی"
+    ]],
+    ["با یک میلیون تومان اضافه چیکار می‌کنی؟",[
+      "پس‌انداز","خرید وسیله موردعلاقه","تفریح","خرید هدیه برای دیگران"
+    ]],
+    ["کدوم قدرت خارق‌العاده رو انتخاب می‌کنی؟",[
+      "نامرئی شدن","پرواز","سفر در زمان","خواندن ذهن"
+    ]],
+    ["خانه ایده‌آلت چه ویژگی‌ای داره؟",[
+      "بزرگ و مجهز","مدرن و هوشمند","نزدیک طبیعت","مرکز شهر"
+    ]],
+    ["چه وسیله کلکسیونی‌ای رو انتخاب می‌کنی؟",[
+      "ساعت خاص","ماشین مینیاتوری","فیگور شخصیت‌ها","سکه و اشیای قدیمی"
+    ]]
+  ]
+};
+
+window.startForm = function() {
+  formIndex = 0;
+  renderForm();
+  show("formScreen");
+};
+
+function renderForm() {
+  const list=forms[currentPlayer];
+  const q=list[formIndex];
+
+  $("formCount").textContent=(formIndex+1)+" از "+list.length;
+  $("formProgress").style.width=((formIndex+1)/list.length*100)+"%";
+  $("formQuestion").textContent=q[0];
+  $("formOptions").innerHTML="";
+
+  q[1].forEach((option,index)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=option;
+
+    if(formAnswers[formIndex]===index) btn.classList.add("selected");
+
+    btn.onclick=async()=>{
+      formAnswers[formIndex]=index;
+      renderForm();
+
+      try {
+        await savePlayerForm(false);
+        $("playerStatus").textContent = "پاسخ با موفقیت ذخیره شد.";
+      } catch(error) {
+        console.error(error);
+        $("playerStatus").textContent = "ذخیره ناموفق بود؛ اتصال Firebase را بررسی کن.";
+      }
+    };
+
+    $("formOptions").appendChild(btn);
+  });
+
+  $("nextForm").textContent =
+    formIndex===list.length-1 ? "ثبت فرم" : "سؤال بعدی";
+}
+
+window.previousForm=function() {
+  if(formIndex>0) {
+    formIndex--;
+    renderForm();
+  }
+};
+
+window.nextForm=async function() {
+  const list = forms[currentPlayer];
+
+  if (formAnswers[formIndex] === undefined) {
+    alert("لطفاً یک گزینه انتخاب کن.");
+    return;
+  }
+
+  if (formIndex < list.length - 1) {
+    formIndex++;
+    renderForm();
+    return;
+  }
+
+  try {
+    await savePlayerForm(true);
+    alert("فرم با موفقیت ثبت شد.");
+    $("playerStatus").textContent = "فرم شما ثبت شده است.";
+    show("dashboard");
+  } catch(error) {
+    console.error(error);
+    alert("ثبت فرم ناموفق بود. اتصال Firebase را بررسی کن.");
+  }
+};
+
+window.showAdminForms = function() {
+  const container = $("adminForms");
+
+  if (adminUnsubscribe) {
+    adminUnsubscribe();
+    adminUnsubscribe = null;
+  }
+
+  container.innerHTML = "<h3>پاسخ‌های زنده بازیکنان</h3><p class='status'>در انتظار دریافت اطلاعات...</p>";
+
+  adminUnsubscribe = onValue(
+    ref(db, "friendQuizSecure/forms"),
+    async snapshot => {
+      container.innerHTML = "<h3>پاسخ‌های زنده بازیکنان</h3>";
+
+      for (const id of ["amirali", "rastin"]) {
+        const card = document.createElement("div");
+        card.className = "panel";
+
+        const heading = document.createElement("h2");
+        heading.textContent = players[id].name;
+        card.appendChild(heading);
+
+        if (!snapshot.hasChild(id)) {
+          const waiting = document.createElement("p");
+          waiting.className = "muted";
+          waiting.textContent = "هنوز پاسخی دریافت نشده است.";
+          card.appendChild(waiting);
+          container.appendChild(card);
+          continue;
+        }
+
+        try {
+          const saved = await decryptPlayerForm(
+            snapshot.child(id).val(),
+            id,
+            PIN_CODES[id]
+          );
+
+          const status = document.createElement("p");
+          status.className = "status";
+          status.textContent = saved.submitted
+            ? "فرم ثبت نهایی شده"
+            : "در حال تکمیل فرم";
+          card.appendChild(status);
+
+          const answers = saved.answers || {};
+
+          forms[id].forEach((question, questionIndex) => {
+            const q = document.createElement("div");
+            q.className = "question";
+            q.style.fontSize = "15px";
+            q.style.marginTop = "20px";
+            q.textContent = (questionIndex + 1) + ". " + question[0];
+            card.appendChild(q);
+
+            question[1].forEach((option, optionIndex) => {
+              const choice = document.createElement("div");
+              choice.className = "option" +
+                (answers[questionIndex] === optionIndex ? " selected" : "");
+              choice.textContent =
+                (answers[questionIndex] === optionIndex ? "✓ " : "") + option;
+              choice.style.cursor = "default";
+              card.appendChild(choice);
+            });
+          });
+        } catch(error) {
+          console.error(error);
+          const errorText = document.createElement("p");
+          errorText.className = "status";
+          errorText.textContent = "خواندن پاسخ‌ها ناموفق بود.";
+          card.appendChild(errorText);
+        }
+
+        container.appendChild(card);
+      }
+    },
+    error => {
+      console.error(error);
+      container.innerHTML =
+        "<p class='status'>اتصال به دیتابیس برقرار نشد. قوانین Firebase را بررسی کن.</p>";
+    }
+  );
+};
+
+
+function attachGameListener() {
+  if (gameSessionUnsubscribe) gameSessionUnsubscribe();
+
+  gameSessionUnsubscribe = onValue(
+    ref(db, "friendQuizSecure/game/session"),
+    snapshot => {
+      if (!snapshot.exists()) return;
+
+      const session = snapshot.val();
+      gameSession = session;
+
+      if (session.status === "active") {
+        gameRevealScheduled = false;
+
+        if (listeningAnswerTurn !== session.turnIndex) {
+          attachAnswerListener(session.turnIndex);
+        }
+
+        renderGame(session);
+      } else if (session.status === "reveal") {
+        if (answerUnsubscribe) answerUnsubscribe();
+        answerUnsubscribe = null;
+        listeningAnswerTurn = null;
+        renderGame(session);
+
+        if (currentPlayer === "mahdi" && !gameRevealScheduled) {
+          gameRevealScheduled = true;
+          gameNextTimeout = setTimeout(advanceGame, 4000);
+        }
+      } else if (session.status === "finished") {
+        if (timerInterval) clearInterval(timerInterval);
+        showGameResults(session);
+      }
+    },
+    error => {
+      console.error(error);
+      $("gameMessage").textContent = "خطا در دریافت وضعیت مسابقه.";
+    }
+  );
+}
+
+function attachAnswerListener(turnIndex) {
+  if (answerUnsubscribe) answerUnsubscribe();
+
+  listeningAnswerTurn = turnIndex;
+  currentGameAnswer = null;
+
+  answerUnsubscribe = onValue(
+    ref(db, "friendQuizSecure/game/answers/" + turnIndex),
+    snapshot => {
+      currentGameAnswer = snapshot.exists() ? snapshot.val() : null;
+      if (gameSession && gameSession.status === "active") {
+        drawGameOptions(gameSession);
+      }
+    }
+  );
+}
+
+function drawGameOptions(session) {
+  const container = $("gameOptions");
+  container.innerHTML = "";
+
+  const isResponder = currentPlayer === session.responderId;
+  const selected = currentGameAnswer
+    ? currentGameAnswer.optionIndex
+    : null;
+
+  session.options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.className = "option" + (selected === index ? " selected" : "");
+    button.textContent = option;
+    button.disabled = session.status !== "active" || !isResponder;
+
+    if (!isResponder) button.style.opacity = ".85";
+
+    button.onclick = async () => {
+      if (!isResponder || !gameSession ||
+          gameSession.status !== "active") return;
+
+      const remaining = gameSession.startedAt +
+        gameSession.duration - Date.now();
+
+      if (remaining <= 0) return;
+
+      try {
+        await set(
+          ref(db, "friendQuizSecure/game/answers/" + session.turnIndex),
+          {
+            responderId: currentPlayer,
+            optionIndex: index,
+            selectedAt: Date.now()
+          }
+        );
+        $("gameMessage").textContent = "انتخابت ثبت شد؛ تا پایان زمان می‌تونی تغییرش بدی.";
+      } catch (error) {
+        console.error(error);
+        $("gameMessage").textContent = "ثبت انتخاب انجام نشد؛ قوانین دیتابیس را بررسی کن.";
+      }
+    };
+
+    container.appendChild(button);
+  });
+}
+
+function renderGame(session) {
+  show("gameScreen");
+
+  const targetName = players[session.targetId].name;
+  const responderName = players[session.responderId].name;
+
+  $("gameTurn").textContent =
+    "دور " + (session.turnIndex + 1) + " از ۴۰ | سؤال درباره " +
+    targetName + " | پاسخ با " + responderName;
+
+  $("gameQuestion").textContent = session.question;
+  $("gameProgress").style.width =
+    ((session.turnIndex + 1) / 40 * 100) + "%";
+
+  if (session.status === "active") {
+    $("gameMessage").textContent =
+      currentPlayer === session.responderId
+        ? "گزینه‌ات را انتخاب کن؛ تا پایان زمان قابل تغییر است."
+        : currentPlayer === "mahdi"
+          ? "انتخاب بازیکن روی این صفحه و تلویزیون نمایش داده می‌شود."
+          : "منتظر انتخاب " + responderName + " باش.";
+
+    drawGameOptions(session);
+    startGameTimer(session);
+  } else {
+    if (timerInterval) clearInterval(timerInterval);
+
+    const correct = session.correctOption;
+    const selected = session.selectedOption;
+
+    $("timer").textContent = "پایان";
+    $("gameOptions").innerHTML = "";
+
+    session.options.forEach((option, index) => {
+      const item = document.createElement("div");
+      item.className = "option" + (index === correct ? " selected" : "");
+      item.textContent =
+        (index === correct ? "✓ پاسخ صحیح: " : "") + option;
+      $("gameOptions").appendChild(item);
+    });
+
+    $("gameMessage").textContent =
+      selected === null || selected === undefined
+        ? "زمان تمام شد؛ پاسخی ثبت نشد."
+        : session.isCorrect
+          ? "آفرین! پاسخ درست بود. یک امتیاز گرفتی."
+          : "پاسخ درست نبود؛ جواب صحیح مشخص شد.";
+  }
+}
+
+function startGameTimer(session) {
+  if (timerInterval) clearInterval(timerInterval);
+
+  const tick = () => {
+    const remaining = Math.max(
+      0,
+      Math.ceil((session.startedAt + session.duration - Date.now()) / 1000)
+    );
+
+    $("timer").textContent = remaining;
+    $("timer").style.color = remaining <= 5 ? "#ff657a" : "";
+
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      if (currentPlayer === "mahdi") finalizeGameTurn(session);
+    }
+  };
+
+  tick();
+  timerInterval = setInterval(tick, 250);
+}
+
+window.startGame = async function() {
+  if (currentPlayer !== "mahdi") {
+    alert("فقط مدیر بازی می‌تواند مسابقه را شروع کند.");
+    return;
+  }
+
+  try {
+    $("gameStatus").textContent = "در حال آماده‌سازی...";
+
+    const snapshot = await get(ref(db, "friendQuizSecure/forms"));
+    if (!snapshot.exists()) {
+      alert("هنوز فرم بازیکنان ثبت نشده است.");
+      $("gameStatus").textContent = "آماده";
+      return;
+    }
+
+    const cache = {};
+
+    for (const id of ["amirali", "rastin"]) {
+      if (!snapshot.child(id).exists()) {
+        alert("فرم " + players[id].name + " پیدا نشد.");
+        $("gameStatus").textContent = "آماده";
+        return;
+      }
+
+      const saved = await decryptPlayerForm(
+        snapshot.child(id).val(),
+        id,
+        PIN_CODES[id]
+      );
+
+      if (!saved.submitted || !saved.answers ||
+          forms[id].length !== 20 ||
+          forms[id].some((q, i) => !Number.isInteger(saved.answers[i]) ||
+            saved.answers[i] < 0 || saved.answers[i] > 3)) {
+        alert("فرم " + players[id].name +
+          " هنوز کامل و نهایی ثبت نشده است.");
+        $("gameStatus").textContent = "آماده";
+        return;
+      }
+
+      cache[id] = saved;
+    }
+
+    gameFormsCache = cache;
+    gameStats = {
+      amirali: {score: 0, correct: 0, wrong: 0},
+      rastin: {score: 0, correct: 0, wrong: 0}
+    };
+    gameReview = [];
+    gameFinalizing = false;
+    gameRevealScheduled = false;
+
+    await startGameTurn(0);
+    $("gameStatus").textContent = "در حال اجرا";
+  } catch (error) {
+    console.error(error);
+    $("gameStatus").textContent = "خطا";
+    alert("شروع مسابقه ناموفق بود. اتصال و قوانین Firebase را بررسی کن.");
+  }
+};
+
+async function startGameTurn(turnIndex) {
+  const targetId = turnIndex % 2 === 0 ? "amirali" : "rastin";
+  const responderId = targetId === "amirali" ? "rastin" : "amirali";
+  const questionIndex = Math.floor(turnIndex / 2);
+  const question = forms[targetId][questionIndex];
+
+  gameFinalizing = false;
+  gameRevealScheduled = false;
+
+  await set(ref(db, "friendQuizSecure/game/session"), {
+    status: "active",
+    turnIndex,
+    totalTurns: 40,
+    targetId,
+    responderId,
+    questionIndex,
+    question: question[0],
+    options: question[1],
+    startedAt: Date.now(),
+    duration: 30000,
+    stats: gameStats,
+    review: gameReview
+  });
+}
+
+async function finalizeGameTurn(session) {
+  if (gameFinalizing || currentPlayer !== "mahdi") return;
+  gameFinalizing = true;
+
+  try {
+    const latest = await get(ref(db, "friendQuizSecure/game/session"));
+    if (!latest.exists() || latest.val().status !== "active" ||
+        latest.val().turnIndex !== session.turnIndex) {
+      gameFinalizing = false;
+      return;
+    }
+
+    const answerSnapshot = await get(
+      ref(db, "friendQuizSecure/game/answers/" + session.turnIndex)
+    );
+
+    const answer = answerSnapshot.exists() ? answerSnapshot.val() : null;
+    const selected = answer &&
+      answer.responderId === session.responderId
+        ? answer.optionIndex
+        : null;
+
+    const correct = gameFormsCache[session.targetId]
+      .answers[session.questionIndex];
+
+    const isCorrect = selected === correct;
+    const stats = gameStats[session.responderId];
+
+    if (isCorrect) {
+      stats.score++;
+      stats.correct++;
+    } else {
+      stats.wrong++;
+    }
+
+    gameReview.push({
+      targetId: session.targetId,
+      responderId: session.responderId,
+      question: session.question,
+      options: session.options,
+      selectedOption: selected,
+      correctOption: correct,
+      isCorrect
+    });
+
+    await update(
+      ref(db, "friendQuizSecure/game/session"),
+      {
+        status: "reveal",
+        selectedOption: selected,
+        correctOption: correct,
+        isCorrect,
+        stats: gameStats,
+        review: gameReview
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    gameFinalizing = false;
+    $("gameMessage").textContent = "خطا در بررسی پاسخ؛ دوباره اتصال را بررسی کن.";
+  }
+}
+
+async function advanceGame() {
+  if (currentPlayer !== "mahdi" || !gameSession ||
+      gameSession.status !== "reveal") return;
+
+  const next = gameSession.turnIndex + 1;
+
+  if (next >= 40) {
+    await update(ref(db, "friendQuizSecure/game/session"), {
+      status: "finished",
+      stats: gameStats,
+      review: gameReview
+    });
+    $("gameStatus").textContent = "پایان مسابقه";
+  } else {
+    await startGameTurn(next);
+  }
+}
+
+function showGameResults(session) {
+  if (timerInterval) clearInterval(timerInterval);
+  if (answerUnsubscribe) answerUnsubscribe();
+
+  const stats = session.stats || {};
+  const review = session.review || [];
+  const a = stats.amirali || {score: 0, correct: 0, wrong: 0};
+  const r = stats.rastin || {score: 0, correct: 0, wrong: 0};
+
+  let winner = "بازی مساوی شد!";
+  if (a.score > r.score) winner = "امیرعلی برنده مسابقه شد!";
+  if (r.score > a.score) winner = "راستین برنده مسابقه شد!";
+
+  const container = $("results");
+  container.innerHTML = "";
+
+  const winnerBox = document.createElement("div");
+  winnerBox.className = "question";
+  winnerBox.style.textAlign = "center";
+  winnerBox.style.margin = "20px 0";
+  winnerBox.textContent = "🏆 " + winner;
+  container.appendChild(winnerBox);
+
+  for (const id of ["amirali", "rastin"]) {
+    const data = stats[id] || {score: 0, correct: 0, wrong: 0};
+    const card = document.createElement("div");
+    card.className = "option";
+    card.style.cursor = "default";
+    card.textContent =
+      players[id].name + " | امتیاز: " + data.score +
+      " | درست: " + data.correct + " | غلط: " + data.wrong;
+    container.appendChild(card);
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = "مرور ۴۰ سؤال مسابقه";
+  container.appendChild(heading);
+
+  review.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "option";
+    card.style.cursor = "default";
+
+    const title = document.createElement("strong");
+    title.textContent = (index + 1) + ". " + item.question;
+    card.appendChild(title);
+
+    const responder = document.createElement("p");
+    responder.className = "status";
+    responder.textContent = "پاسخ‌دهنده: " + players[item.responderId].name;
+    card.appendChild(responder);
+
+    const chosen = document.createElement("p");
+    chosen.textContent = "انتخاب: " +
+      (item.selectedOption === null
+        ? "بدون پاسخ"
+        : item.options[item.selectedOption]);
+    card.appendChild(chosen);
+
+    const correct = document.createElement("p");
+    correct.textContent = "جواب صحیح: " + item.options[item.correctOption];
+    card.appendChild(correct);
+
+    const result = document.createElement("p");
+    result.className = "status";
+    result.textContent = item.isCorrect ? "✓ پاسخ درست" : "✗ پاسخ نادرست";
+    card.appendChild(result);
+
+    container.appendChild(card);
+  });
+
+  show("resultScreen");
+}
+
+window.backHome = function() {
+  show("home");
+};
+
+
+window.backHome=function() {
+  show("home");
+};
+
+show("home");
+</script>
+</body>
+</html>
+
