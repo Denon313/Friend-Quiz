@@ -592,6 +592,10 @@ input:focus {
     <div id="gameQuestion" class="game-question"></div>
     <div id="gameOptions" class="game-options-grid"></div>
     <div id="gameMessage" class="game-message">مسابقه آماده است</div>
+    <div id="gameAdminControls" class="game-admin-controls hidden">
+      <button class="secondary" onclick="stopGame()">توقف مسابقه</button>
+      <button class="primary" onclick="restartGame()">شروع مجدد از سؤال اول</button>
+    </div>
     <div class="progress"><div id="gameProgress"></div></div>
   </div>
 </section>
@@ -599,6 +603,9 @@ input:focus {
 <section id="resultScreen" class="panel hidden">
   <h2>نتیجه مسابقه</h2>
   <div id="results"></div>
+  <div id="resultAdminControls" class="hidden">
+    <button class="primary" onclick="restartGame()">شروع مجدد از سؤال اول</button>
+  </div>
   <button class="primary" onclick="backHome()">بازگشت به خانه</button>
 </section>
 
@@ -1176,6 +1183,22 @@ function attachGameListener() {
           gameRevealScheduled = true;
           gameNextTimeout = setTimeout(advanceGame, 4000);
         }
+      } else if (session.status === "stopped") {
+        if (timerInterval) clearInterval(timerInterval);
+        if (gameNextTimeout) clearTimeout(gameNextTimeout);
+        if (answerUnsubscribe) answerUnsubscribe();
+
+        answerUnsubscribe = null;
+        listeningAnswerTurn = null;
+        gameRevealScheduled = false;
+        gameFinalizing = false;
+
+        show("gameScreen");
+        $("gameAdminControls").classList.toggle("hidden", currentPlayer !== "mahdi");
+        $("timer").textContent = "متوقف";
+        $("gameOptions").innerHTML = "";
+        $("gameMessage").textContent = "مسابقه توسط مدیر متوقف شده است.";
+        $("gameStatus").textContent = "متوقف";
       } else if (session.status === "finished") {
         if (timerInterval) clearInterval(timerInterval);
         showGameResults(session);
@@ -1265,6 +1288,7 @@ function drawGameOptions(session) {
 
 function renderGame(session) {
   show("gameScreen");
+  $("gameAdminControls").classList.toggle("hidden", currentPlayer !== "mahdi");
 
   const targetName = players[session.targetId].name;
   const responderName = players[session.responderId].name;
@@ -1422,12 +1446,86 @@ window.startGame = async function() {
     gameFinalizing = false;
     gameRevealScheduled = false;
 
+    if (timerInterval) clearInterval(timerInterval);
+    if (gameNextTimeout) clearTimeout(gameNextTimeout);
+    if (answerUnsubscribe) answerUnsubscribe();
+
+    answerUnsubscribe = null;
+    listeningAnswerTurn = null;
+    currentGameAnswer = null;
+
+    // فقط پاسخ‌های دورهای قبلی پاک می‌شوند؛ فرم‌های بازیکنان حفظ می‌شوند.
+    await set(ref(db, "friendQuizSecure/game/answers"), null);
+
     await startGameTurn(0);
     $("gameStatus").textContent = "در حال اجرا";
   } catch (error) {
     console.error(error);
     $("gameStatus").textContent = "خطا";
     alert("شروع مسابقه ناموفق بود. اتصال و قوانین Firebase را بررسی کن.");
+  }
+};
+
+window.stopGame = async function() {
+  if (currentPlayer !== "mahdi") {
+    alert("فقط مدیر بازی می‌تواند مسابقه را متوقف کند.");
+    return;
+  }
+
+  if (!gameSession || gameSession.status === "stopped") {
+    alert("مسابقه‌ای برای توقف وجود ندارد.");
+    return;
+  }
+
+  if (!confirm("مسابقه متوقف شود؟ فرم‌های بازیکنان حفظ می‌شوند.")) return;
+
+  try {
+    if (timerInterval) clearInterval(timerInterval);
+    if (gameNextTimeout) clearTimeout(gameNextTimeout);
+    if (answerUnsubscribe) answerUnsubscribe();
+
+    answerUnsubscribe = null;
+    listeningAnswerTurn = null;
+    gameFinalizing = false;
+    gameRevealScheduled = false;
+
+    await update(ref(db, "friendQuizSecure/game/session"), {
+      status: "stopped",
+      stoppedAt: Date.now()
+    });
+  } catch (error) {
+    console.error(error);
+    alert("توقف مسابقه ناموفق بود: " + (error.code || error.message));
+  }
+};
+
+window.restartGame = async function() {
+  if (currentPlayer !== "mahdi") {
+    alert("فقط مدیر بازی می‌تواند مسابقه را از نو شروع کند.");
+    return;
+  }
+
+  if (!confirm("مسابقه از سؤال اول شروع شود؟ امتیازها صفر می‌شوند و فرم‌های بازیکنان حفظ می‌شوند.")) return;
+
+  try {
+    if (timerInterval) clearInterval(timerInterval);
+    if (gameNextTimeout) clearTimeout(gameNextTimeout);
+    if (answerUnsubscribe) answerUnsubscribe();
+
+    answerUnsubscribe = null;
+    listeningAnswerTurn = null;
+    gameFinalizing = false;
+    gameRevealScheduled = false;
+
+    await update(ref(db, "friendQuizSecure/game/session"), {
+      status: "stopped",
+      stoppedAt: Date.now()
+    });
+
+    await window.startGame();
+  } catch (error) {
+    console.error(error);
+    alert("شروع مجدد ناموفق بود: " + (error.code || error.message));
   }
 };
 
@@ -1550,6 +1648,7 @@ function showGameResults(session) {
   if (a.score > r.score) winner = "امیرعلی برنده مسابقه شد!";
   if (r.score > a.score) winner = "راستین برنده مسابقه شد!";
 
+  $("resultAdminControls").classList.toggle("hidden", currentPlayer !== "mahdi");
   const container = $("results");
   container.innerHTML = "";
 
