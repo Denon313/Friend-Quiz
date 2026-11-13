@@ -239,6 +239,241 @@ input:focus {
   .player strong {font-size:13px}
   .panel {padding:17px}
 }
+
+/* ===== FRIEND QUIZ TV DESIGN ===== */
+#gameScreen:not(.hidden) {
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  overflow-y:auto;
+  margin:0;
+  padding:clamp(14px,3vw,38px);
+  border:0;
+  border-radius:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,#17446b 0%,transparent 48%),
+    radial-gradient(ellipse at 100% 100%,#30205c 0%,transparent 45%),
+    #070b15;
+  box-shadow:none;
+}
+.game-stage {
+  width:min(100%,1120px);
+  min-height:100%;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:clamp(13px,2.5vh,25px);
+}
+.game-header {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:12px;
+}
+.game-brand {
+  color:#55ddff;
+  font-size:clamp(15px,2vw,22px);
+  font-weight:900;
+  letter-spacing:2px;
+}
+.game-brand span {
+  display:inline-block;
+  margin-right:5px;
+  padding:3px 8px;
+  border-radius:7px;
+  color:white;
+  background:#e83e61;
+  font-size:11px;
+}
+.game-round {
+  text-align:center;
+  font-size:clamp(19px,3.5vw,34px);
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 0 22px #42d9ff55;
+}
+.game-timer-wrap {
+  justify-self:end;
+  min-width:90px;
+  text-align:center;
+  padding:8px 17px;
+  border:1px solid #42d9ff55;
+  border-radius:16px;
+  background:#102238;
+}
+.game-timer-wrap span {
+  display:block;
+  color:#9bb2ca;
+  font-size:11px;
+}
+#gameScreen .timer {
+  font-size:clamp(30px,5vw,48px);
+  line-height:1.2;
+  color:#4ce5ac;
+  font-variant-numeric:tabular-nums;
+}
+.game-scoreboard {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.game-score {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 18px;
+  border:1px solid #ffffff20;
+  border-radius:15px;
+  background:linear-gradient(120deg,#172b45,#101a2b);
+}
+.game-score strong {
+  font-size:clamp(14px,2vw,20px);
+  color:#fff;
+}
+.game-score b {
+  color:#55ddff;
+  font-size:clamp(22px,3vw,32px);
+  font-variant-numeric:tabular-nums;
+}
+.game-meta {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.game-meta span {
+  padding:7px 15px;
+  border:1px solid #42d9ff35;
+  border-radius:30px;
+  background:#42d9ff12;
+  color:#aeeeff;
+  font-size:clamp(12px,1.7vw,15px);
+}
+.game-question {
+  padding:clamp(20px,4vw,38px);
+  border:1px solid #ffffff22;
+  border-radius:23px;
+  background:linear-gradient(130deg,#172c49ee,#17182fee);
+  text-align:center;
+  font-size:clamp(21px,4vw,38px);
+  line-height:1.9;
+  font-weight:900;
+  color:#fff;
+  box-shadow:0 15px 45px #0005,inset 0 1px #ffffff12;
+}
+.game-options-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(10px,2vw,18px);
+}
+#gameScreen .game-choice {
+  min-height:clamp(76px,13vh,125px);
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  margin:0;
+  padding:clamp(13px,2.5vw,24px);
+  text-align:right;
+  border:2px solid #ffffff20;
+  border-radius:19px;
+  color:#f5f8ff;
+  background:linear-gradient(135deg,#17263b,#101827);
+  font-size:clamp(15px,2.5vw,24px);
+  font-weight:700;
+  transition:transform .18s,border-color .18s,background .18s;
+}
+#gameScreen button.game-choice:not(:disabled):active {
+  transform:scale(.98);
+}
+#gameScreen .game-choice:disabled {
+  opacity:1;
+}
+.choice-number {
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  color:#07111c;
+  background:#55ddff;
+  font-weight:900;
+}
+#gameScreen .game-choice.selected {
+  border-color:#4bdcff;
+  background:linear-gradient(120deg,#12466a,#172d50);
+  box-shadow:0 0 25px #42d9ff30;
+}
+#gameScreen .game-choice.wrong {
+  border-color:#ff5578;
+  background:linear-gradient(120deg,#562235,#321a2c);
+}
+#gameScreen .game-choice.correct {
+  border-color:#36e6a0;
+  background:linear-gradient(120deg,#104d3b,#15382f);
+}
+.game-message {
+  min-height:48px;
+  display:grid;
+  place-items:center;
+  padding:10px 15px;
+  border-radius:13px;
+  background:#ffffff0b;
+  color:#c7d5e7;
+  text-align:center;
+  font-size:clamp(13px,1.8vw,17px);
+}
+#gameScreen .progress {
+  height:9px;
+  margin:0;
+  background:#ffffff18;
+}
+#gameScreen .progress div {
+  background:linear-gradient(90deg,#42d9ff,#a78bfa);
+  box-shadow:0 0 14px #42d9ff88;
+}
+#gameScreen .timer.urgent {
+  color:#ff6684;
+  animation:timerPulse .65s infinite alternate;
+}
+@keyframes timerPulse {
+  from {transform:scale(1)}
+  to {transform:scale(1.1);text-shadow:0 0 22px #ff5578}
+}
+@media(max-width:600px) {
+  #gameScreen:not(.hidden) {padding:13px}
+  .game-header {
+    grid-template-columns:1fr auto;
+    row-gap:12px;
+  }
+  .game-brand {grid-column:1}
+  .game-round {
+    grid-column:1/-1;
+    grid-row:2;
+  }
+  .game-timer-wrap {
+    grid-column:2;
+    grid-row:1;
+  }
+  .game-score {padding:10px}
+  .game-score strong {font-size:13px}
+  .choice-number {
+    flex-basis:29px;
+    width:29px;
+    height:29px;
+  }
+  #gameScreen .game-choice {
+    gap:8px;
+    padding:12px;
+    min-height:88px;
+  }
+}
+
 </style>
 </head>
 
@@ -328,17 +563,37 @@ input:focus {
 </section>
 
 <section id="gameScreen" class="panel hidden">
-  <div class="topline">
-    <div>
-      <div class="muted">سؤال مسابقه</div>
-      <strong id="gameTurn">نوبت بازیکن</strong>
+  <div class="game-stage">
+    <header class="game-header">
+      <div class="game-brand">FRIEND QUIZ <span>LIVE</span></div>
+      <div class="game-round" id="gameTurn">نوبت بازیکن</div>
+      <div class="game-timer-wrap">
+        <span>زمان باقی‌مانده</span>
+        <div class="timer" id="timer">30</div>
+      </div>
+    </header>
+
+    <div class="game-scoreboard" id="gameScoreboard">
+      <div class="game-score">
+        <strong>امیرعلی</strong>
+        <b id="scoreAmirali">۰</b>
+      </div>
+      <div class="game-score">
+        <strong>راستین</strong>
+        <b id="scoreRastin">۰</b>
+      </div>
     </div>
-    <div class="timer" id="timer">30</div>
+
+    <div class="game-meta">
+      <span id="gameTarget">سؤال درباره بازیکن</span>
+      <span id="gameResponder">پاسخ‌دهنده</span>
+    </div>
+
+    <div id="gameQuestion" class="game-question"></div>
+    <div id="gameOptions" class="game-options-grid"></div>
+    <div id="gameMessage" class="game-message">مسابقه آماده است</div>
+    <div class="progress"><div id="gameProgress"></div></div>
   </div>
-  <div class="progress"><div id="gameProgress"></div></div>
-  <div id="gameQuestion" class="question"></div>
-  <div id="gameOptions"></div>
-  <div id="gameMessage" class="status"></div>
 </section>
 
 <section id="resultScreen" class="panel hidden">
@@ -950,22 +1205,33 @@ function attachAnswerListener(turnIndex) {
   );
 }
 
+
 function drawGameOptions(session) {
   const container = $("gameOptions");
   container.innerHTML = "";
+  container.className = "game-options-grid";
 
   const isResponder = currentPlayer === session.responderId;
-  const selected = currentGameAnswer
-    ? currentGameAnswer.optionIndex
-    : null;
+  const answer = currentGameAnswer &&
+    currentGameAnswer.responderId === session.responderId
+      ? currentGameAnswer : null;
+  const selected = answer ? answer.optionIndex : null;
 
   session.options.forEach((option, index) => {
     const button = document.createElement("button");
-    button.className = "option" + (selected === index ? " selected" : "");
-    button.textContent = option;
+    button.type = "button";
+    button.className = "game-choice" +
+      (selected === index ? " selected" : "");
     button.disabled = session.status !== "active" || !isResponder;
 
-    if (!isResponder) button.style.opacity = ".85";
+    const number = document.createElement("span");
+    number.className = "choice-number";
+    number.textContent = ["۱", "۲", "۳", "۴"][index];
+
+    const label = document.createElement("span");
+    label.textContent = option;
+
+    button.append(number, label);
 
     button.onclick = async () => {
       if (!isResponder || !gameSession ||
@@ -973,7 +1239,6 @@ function drawGameOptions(session) {
 
       const remaining = gameSession.startedAt +
         gameSession.duration - Date.now();
-
       if (remaining <= 0) return;
 
       try {
@@ -985,10 +1250,12 @@ function drawGameOptions(session) {
             selectedAt: Date.now()
           }
         );
-        $("gameMessage").textContent = "انتخابت ثبت شد؛ تا پایان زمان می‌تونی تغییرش بدی.";
+        $("gameMessage").textContent =
+          "انتخابت ثبت شد؛ تا پایان زمان می‌تونی تغییرش بدی.";
       } catch (error) {
         console.error(error);
-        $("gameMessage").textContent = "ثبت انتخاب انجام نشد؛ قوانین دیتابیس را بررسی کن.";
+        $("gameMessage").textContent =
+          "ثبت انتخاب انجام نشد؛ اتصال Firebase را بررسی کن.";
       }
     };
 
@@ -1002,47 +1269,77 @@ function renderGame(session) {
   const targetName = players[session.targetId].name;
   const responderName = players[session.responderId].name;
 
-  $("gameTurn").textContent =
-    "دور " + (session.turnIndex + 1) + " از ۴۰ | سؤال درباره " +
-    targetName + " | پاسخ با " + responderName;
-
+  $("gameTurn").textContent = "نوبت " + responderName;
+  $("gameTarget").textContent = "سؤال درباره " + targetName;
+  $("gameResponder").textContent = "پاسخ‌دهنده: " + responderName;
   $("gameQuestion").textContent = session.question;
+
   $("gameProgress").style.width =
     ((session.turnIndex + 1) / 40 * 100) + "%";
 
+  const stats = session.stats || {};
+  const a = stats.amirali || {score:0};
+  const r = stats.rastin || {score:0};
+  $("scoreAmirali").textContent = a.score || 0;
+  $("scoreRastin").textContent = r.score || 0;
+
   if (session.status === "active") {
-    $("gameMessage").textContent =
-      currentPlayer === session.responderId
-        ? "گزینه‌ات را انتخاب کن؛ تا پایان زمان قابل تغییر است."
-        : currentPlayer === "mahdi"
-          ? "انتخاب بازیکن روی این صفحه و تلویزیون نمایش داده می‌شود."
-          : "منتظر انتخاب " + responderName + " باش.";
+    const answer = currentGameAnswer &&
+      currentGameAnswer.responderId === session.responderId
+        ? currentGameAnswer : null;
+
+    if (currentPlayer === session.responderId) {
+      $("gameMessage").textContent = answer
+        ? "انتخابت ثبت شده؛ تا پایان زمان می‌تونی تغییرش بدی."
+        : "نوبت توئه! یکی از چهار گزینه رو انتخاب کن.";
+    } else if (answer) {
+      $("gameMessage").textContent =
+        "انتخاب " + responderName + ": " +
+        session.options[answer.optionIndex];
+    } else {
+      $("gameMessage").textContent =
+        "منتظر انتخاب " + responderName + " هستیم...";
+    }
 
     drawGameOptions(session);
     startGameTimer(session);
   } else {
     if (timerInterval) clearInterval(timerInterval);
 
-    const correct = session.correctOption;
-    const selected = session.selectedOption;
-
     $("timer").textContent = "پایان";
+    $("timer").classList.remove("urgent");
     $("gameOptions").innerHTML = "";
 
     session.options.forEach((option, index) => {
       const item = document.createElement("div");
-      item.className = "option" + (index === correct ? " selected" : "");
-      item.textContent =
-        (index === correct ? "✓ پاسخ صحیح: " : "") + option;
+      item.className = "game-choice";
+
+      if (index === session.correctOption) {
+        item.classList.add("correct");
+      } else if (index === session.selectedOption) {
+        item.classList.add("wrong");
+      }
+
+      const number = document.createElement("span");
+      number.className = "choice-number";
+      number.textContent = ["۱", "۲", "۳", "۴"][index];
+
+      const label = document.createElement("span");
+      label.textContent =
+        (index === session.correctOption ? "✓ پاسخ صحیح: " :
+         index === session.selectedOption ? "انتخاب بازیکن: " : "") + option;
+
+      item.append(number, label);
       $("gameOptions").appendChild(item);
     });
 
     $("gameMessage").textContent =
-      selected === null || selected === undefined
+      session.selectedOption === null ||
+      session.selectedOption === undefined
         ? "زمان تمام شد؛ پاسخی ثبت نشد."
         : session.isCorrect
           ? "آفرین! پاسخ درست بود. یک امتیاز گرفتی."
-          : "پاسخ درست نبود؛ جواب صحیح مشخص شد.";
+          : "این بار پاسخ درست نبود؛ جواب صحیح مشخص شد.";
   }
 }
 
@@ -1052,15 +1349,19 @@ function startGameTimer(session) {
   const tick = () => {
     const remaining = Math.max(
       0,
-      Math.ceil((session.startedAt + session.duration - Date.now()) / 1000)
+      Math.ceil(
+        (session.startedAt + session.duration - Date.now()) / 1000
+      )
     );
 
     $("timer").textContent = remaining;
-    $("timer").style.color = remaining <= 5 ? "#ff657a" : "";
+    $("timer").classList.toggle("urgent", remaining <= 5);
 
     if (remaining <= 0) {
       clearInterval(timerInterval);
-      if (currentPlayer === "mahdi") finalizeGameTurn(session);
+      if (currentPlayer === "mahdi") {
+        finalizeGameTurn(session);
+      }
     }
   };
 
